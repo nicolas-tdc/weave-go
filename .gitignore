@@ -1,0 +1,9 @@
+# Go binary and build artifacts
+/bin
+/tmp
+
+# Air specific
+.air
+
+# Docker-specific files
+*.tar.gz
