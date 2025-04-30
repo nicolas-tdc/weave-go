@@ -1,3 +1,6 @@
+# weave-go specifics
+/.env*
+
 # Go binary and build artifacts
 /bin
 /tmp
