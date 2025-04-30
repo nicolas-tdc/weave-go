@@ -15,10 +15,12 @@ fi
 
 env_name="$1"
 
+echo -e "\e[33m$SERVICE_NAME: Trying to start in environment '$env_name'...\e[0m"
+
 if [ "$env_name" == "dev" ]; then
-    air
+    air > /dev/null 2>&1 &
 else
-    go run .
+    go run . > /dev/null 2>&1 &
 fi
 
-echo -e "\e[33m$SERVICE_NAME: Trying to start in environment '$env_name'...\e[0m"
+echo -e "\e[32m$SERVICE_NAME: Service started successfully.\e[0m"
