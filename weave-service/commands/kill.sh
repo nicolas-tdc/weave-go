@@ -16,20 +16,25 @@ env_name="$1"
 echo -e "\e[33m$SERVICE_NAME: Trying to stop in environment '$env_name'...\e[0m"
 
 if [ "$env_name" == "dev" ]; then
+
     if [ -f dev.pid ]; then
         if ! [ "$(cat dev.pid)" == "" ]; then
             kill -9 $(cat dev.pid) > /dev/null 2>&1
         fi
-        rm dev.pid
+
+        rm dev.pid > /dev/null 2>&1
     fi
 else
     if [ -f prod.pid ]; then
-        if ! [ "$(cat prod.pid)" == "" ]; then
-            kill -9 $(cat prod.pid) > /dev/null 2>&1
-        fi
-        rm prod.pid
 
-        pkill -f "./$SERVICE_NAME"
+        pid=$(cat prod.pid)
+        if ! [ "$pid" == "" ] && [ kill -0 "$pid" 2>/dev/null ]; then
+            kill -9 $(cat prod.pid)
+        fi
+
+        rm prod.pid > /dev/null 2>&1
+
+        pkill -f "./$SERVICE_NAME" > /dev/null 2>&1
     fi
 fi
 
