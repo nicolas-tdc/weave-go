@@ -59,7 +59,7 @@ prepare_service() {
 }
 
 # Function: prepare_environment_files
-# Purpose: Aggregate the environment files into a single .env file
+# Purpose: Prepare the environment specific files
 # Arguments:
 #   1. environment_name: The name of the environment to prepare
 # Returns: None
