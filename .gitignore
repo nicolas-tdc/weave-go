@@ -1,5 +1,5 @@
 # weave-go specifics
-/.env*
+.env
 *.pid
 
 # Go binary and build artifacts
