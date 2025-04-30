@@ -12,6 +12,22 @@ set -e
 # Usage: prepare_service
 prepare_service() {
     export SERVICE_NAME=$(basename "$PWD") > /dev/null 2>&1
+
+    # Check if Go is installed
+    if ! command -v go &> /dev/null; then
+        echo -e "\e[31mGo is not installed. Exiting...\e[0m"
+        exit 1
+    fi
+
+    # Check if 'air' is installed
+    if ! command -v air &> /dev/null; then
+        echo "\e[33m'air' not found, installing...\e[0m"
+        go install github.com/air-verse/air@latest
+        if [ $? -ne 0 ]; then
+            echo "\e[31mFailed to install air.\e[0m"
+            exit 1
+        fi
+    fi
 }
 
 # Function: prepare_environment_file
