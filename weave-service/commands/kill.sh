@@ -11,29 +11,23 @@ else
     exit 1
 fi
 
-env_name="$1"
-
 echo -e "\e[33m$SERVICE_NAME: Trying to stop in environment '$env_name'...\e[0m"
 
-if [ "$env_name" == "dev" ]; then
+env_name="$1"
 
-    if [ -f dev.pid ]; then
-        if ! [ "$(cat dev.pid)" == "" ]; then
-            kill -9 $(cat dev.pid) > /dev/null 2>&1
-        fi
-
-        rm dev.pid > /dev/null 2>&1
+env_pid="$env_name.pid"
+if [ -f "$env_pid" ]; then
+    # Kill the process if it exists
+    if ! [ "$(cat $env_pid)" == "" ]; then
+        kill -9 $(cat $env_pid) > /dev/null 2>&1
     fi
-else
-    if [ -f prod.pid ]; then
 
-        pid=$(cat prod.pid)
-        if ! [ "$pid" == "" ] && [ kill -0 "$pid" 2>/dev/null ]; then
-            kill -9 $(cat prod.pid)
-        fi
+    rm $env_pid > /dev/null 2>&1
+fi
 
-        rm prod.pid > /dev/null 2>&1
-
+if ! [ $env_name == "dev" ]; then
+    # Check if the service is running and kill it
+    if pgrep -f "./$SERVICE_NAME" > /dev/null 2>&1; then
         pkill -f "./$SERVICE_NAME" > /dev/null 2>&1
     fi
 fi
