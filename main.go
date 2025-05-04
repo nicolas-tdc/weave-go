@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,25 +10,36 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello from Weave-Go API!")
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	// @ todo dynamic port from .env
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
+	w.Header().Set("Content-Type", "application/json")
+	response := map[string]string{"message": "Welcome to the API!"}
+	json.NewEncoder(w).Encode(response)
+}
+
+func statusHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	response := map[string]string{"message": "OK"}
+	json.NewEncoder(w).Encode(response)
 }
 
 func main() {
-	// Load .env file
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	// Load .env file if present
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using default settings.")
 	}
 
-	// Get environment variables
-	// Port defaults to 8080
+	// Get PORT from environment, default to 8080
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "8081"
 	}
 
-	http.HandleFunc("/", handler)
-	fmt.Println("Starting Weave-Go API on port: ", port)
-	http.ListenAndServe(":"+port, nil)
+	// Basic routes
+	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/status", statusHandler)
+
+	fmt.Println("Server running at http://localhost:" + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
