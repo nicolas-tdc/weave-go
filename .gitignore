@@ -3,8 +3,8 @@
 *.pid
 
 # Go binary and build artifacts
-/bin
-/tmp
+bin
+tmp
 
 # Air specific
 .air
