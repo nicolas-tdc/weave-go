@@ -12,50 +12,6 @@ set -e
 # Usage: prepare_service
 prepare_service() {
     export SERVICE_NAME=$(basename "$PWD") > /dev/null 2>&1
-
-    # Function: get_go_package
-    # Purpose: Check if a Go package is installed, and install it if not
-    # Arguments:
-    #   $1 - The package name to check
-    # Returns: None
-    # Usage: get_go_package <package_name>
-    get_go_package() {
-        if [ -z "$1" ]; then
-            echo -e "\e[31mget_go_package() - Error: First argument is required.\e[0m"
-            echo -e "\e[31musage: get_go_package <package_name>\e[0m"
-            exit 1
-        fi
-        local package_name=$1
-
-        local package_path=$(go list -m -f '{{.Path}}' all 2>/dev/null | grep "$package_name")
-        if [ -z "$package_path" ]; then
-            go get "$package_name"
-        fi
-    }
-
-    # Check if Go is installed
-    if ! command -v go &> /dev/null; then
-        echo -e "\e[31mGo is not installed. Exiting...\e[0m"
-        exit 1
-    fi
-
-    # Check if 'air' is installed
-    if ! command -v air &> /dev/null; then
-        echo "\e[33m'air' not found, installing...\e[0m"
-        go install github.com/air-verse/air@latest
-        if [ $? -ne 0 ]; then
-            echo "\e[31mFailed to install air.\e[0m"
-            exit 1
-        fi
-    fi
-
-    # Check and edit module name to service name
-    if [ $(go list -m) != "$SERVICE_NAME" ]; then
-        go mod edit -module="weave.com/$SERVICE_NAME"
-    fi
-
-    # Install required Go packages
-    get_go_package "github.com/joho/godotenv"
 }
 
 # Function: prepare_environment_files
